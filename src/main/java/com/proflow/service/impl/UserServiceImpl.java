@@ -7,14 +7,22 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.proflow.entity.User;
+import com.proflow.entity.UserRole;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.mapper.UserMapper;
+import com.proflow.mapper.UserRoleMapper;
 import com.proflow.service.MenuService;
 import com.proflow.service.RoleService;
+import com.proflow.service.UserRoleService;
 import com.proflow.service.UserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.proflow.web.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -32,6 +40,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Override
     public UserVO login(String username, String password) throws Exception {
@@ -78,14 +89,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User save(User user) throws Exception {
-        if (user == null) throw new IllegalArgumentException();
+    @Transactional(rollbackFor = Exception.class)
+    public User save(UserForm userForm) throws Exception {
+        if (userForm == null) throw new IllegalArgumentException();
+        User user = new User();
+        BeanUtil.copyProperties(userForm, user);
         if(StrUtil.isNotBlank(user.getPassword())) {
             String pwd = SecureUtil.md5(user.getPassword());
             user.setPassword(pwd);
         }
         if (!this.insertOrUpdate(user)) {
             throw new Exception("保存失败");
+        }
+
+        userRoleService.removeUserRoleByUserId(user.getId());
+
+        List<UserRole> list = new ArrayList<>();
+        for (Long roleId : userForm.getRoles()) {
+            UserRole userRole = new UserRole(user.getId(), roleId);
+            list.add(userRole);
+        }
+
+        if (!this.userRoleService.insertBatch(list)) {
+            throw new Exception("保存用户角色信息失败");
         }
         return user;
     }

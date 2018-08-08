@@ -23,6 +23,14 @@ public class UserRole extends Model<UserRole> {
 	private Long roleId;
 	private Date createTime;
 
+	public UserRole() {}
+
+	public UserRole(Long userId, Long roleId) {
+		this.userId = userId;
+		this.roleId = roleId;
+		this.createTime = new Date();
+	}
+
 
 	public Long getId() {
 		return id;
