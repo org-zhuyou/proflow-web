@@ -1,8 +1,11 @@
 package com.proflow.web.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.entity.User;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.service.UserService;
+import com.proflow.web.form.PageForm;
 import com.proflow.web.form.ResultForm;
 import com.proflow.web.utils.SessionUtil;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 用户相关
  * Created by Leonid on 2018/8/8.
  */
 @RestController
@@ -67,6 +71,22 @@ public class UserController {
                 throw new Exception("用户不存在");
             }
             resultForm = ResultForm.createSuccess("查询成功", user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+
+    @PostMapping("/page")
+    public Object page(User user, PageForm<User> pageForm) {
+        ResultForm<?> resultForm = null;
+        try {
+            EntityWrapper<User> wrapper = new EntityWrapper<>();
+            wrapper.setEntity(user);
+            Page<User> page = userService.selectPage(pageForm.createPage(), wrapper);
+            resultForm = ResultForm.createSuccess("查询成功", page);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
