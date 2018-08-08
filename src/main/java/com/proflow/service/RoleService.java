@@ -2,6 +2,7 @@ package com.proflow.service;
 
 import com.proflow.entity.Role;
 import com.baomidou.mybatisplus.service.IService;
+import com.proflow.web.form.RoleForm;
 
 import java.util.List;
 
@@ -16,5 +17,9 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
 
     List<Role> findRolesByUserId(Long userId) throws Exception;
+
+    Role save(RoleForm roleForm) throws Exception;
+
+    boolean remove(Long id) throws Exception;
 
 }
