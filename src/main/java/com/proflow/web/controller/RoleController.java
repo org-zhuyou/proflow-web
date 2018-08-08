@@ -1,5 +1,6 @@
 package com.proflow.web.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.proflow.entity.Role;
 import com.proflow.service.RoleService;
 import com.proflow.web.form.ResultForm;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -43,7 +46,28 @@ public class RoleController {
     @PostMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;
+        try {
+            Role role = roleService.selectById(id);
+            resultForm = ResultForm.createSuccess("查询成功",role);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
 
+    @PostMapping("/findAll")
+    public Object findAll() {
+        ResultForm<?> resultForm = null;
+        try {
+            List<Role> roleList = roleService.selectList(new EntityWrapper<>());
+            resultForm = ResultForm.createSuccess("查询成功",roleList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
         return resultForm;
     }
 
