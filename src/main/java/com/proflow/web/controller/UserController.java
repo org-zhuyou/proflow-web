@@ -41,6 +41,40 @@ public class UserController {
         return resultForm;
     }
 
-    //public Object delete
+    @PostMapping("/delete")
+    public Object delete(Long id) {
+        ResultForm<?> resultForm = null;
+        try {
+            if (userService.delete(id)) {
+                resultForm = ResultForm.createSuccess("删除成功", null);
+            } else {
+                resultForm = ResultForm.createError("删除失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+
+    @PostMapping("/findById")
+    public Object findById(Long id) {
+        ResultForm<?> resultForm = null;
+        try {
+            User user = userService.selectById(id);
+            if (null == user) {
+                throw new Exception("用户不存在");
+            }
+            resultForm = ResultForm.createSuccess("查询成功", user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+
+
 
 }
