@@ -20,4 +20,6 @@ public interface UserService extends IService<User> {
 
     User save(User user) throws Exception;
 
+    boolean delete(Long id) throws Exception;
+
 }

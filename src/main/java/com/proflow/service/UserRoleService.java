@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface UserRoleService extends IService<UserRole> {
 
+    boolean removeUserRoleByRoleId(Long roleId) throws Exception;
+
+    boolean removeUserRoleByUserId(Long userId) throws Exception;
+
 }

@@ -52,6 +52,7 @@ public class User extends Model<User> {
      */
 	private String position;
 	private Date createTime;
+	private Integer delFlag;
 
 
 	public Long getId() {
@@ -132,6 +133,14 @@ public class User extends Model<User> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Integer getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(Integer delFlag) {
+		this.delFlag = delFlag;
 	}
 
 	@Override

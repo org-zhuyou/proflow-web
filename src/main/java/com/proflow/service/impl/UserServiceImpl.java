@@ -89,4 +89,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return user;
     }
+
+    @Override
+    public boolean delete(Long id) throws Exception {
+        if (id == null) throw new IllegalArgumentException();
+
+        User user = this.selectById(id);
+        if (null == user) {
+            throw new Exception("用户不存在");
+        }
+        user.setDelFlag(1);
+        return this.updateById(user);
+    }
 }

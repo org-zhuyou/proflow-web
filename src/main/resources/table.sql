@@ -12,6 +12,7 @@ CREATE TABLE `user` (
   `dept` varchar(50) NULL COMMENT '部门',
   `position` varchar(50) NULL COMMENT '职位',
   `create_time` datetime NOT NULL,
+  `del_flag` int(2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 -- 角色表

@@ -1,10 +1,14 @@
 package com.proflow.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.proflow.entity.Menu;
+import com.proflow.entity.RoleMenu;
 import com.proflow.mapper.MenuMapper;
 import com.proflow.service.MenuService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.proflow.service.RoleMenuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
 
+
     @Override
     public List<Menu> findMenusByUserId(Long userId) throws Exception {
         if (ObjectUtil.isNull(userId)) {
@@ -28,5 +33,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
         return null;
     }
+
+
 
 }

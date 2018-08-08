@@ -23,6 +23,14 @@ public class RoleMenu extends Model<RoleMenu> {
 	private Long menuId;
 	private Date createTime;
 
+	public RoleMenu() {}
+
+	public RoleMenu(Long roleId, Long menuId) {
+		this.roleId = roleId;
+		this.menuId = menuId;
+		this.createTime = new Date();
+	}
+
 
 	public Long getId() {
 		return id;

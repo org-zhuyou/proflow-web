@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface RoleMenuService extends IService<RoleMenu> {
 
+    boolean removeRoleMenuRelation(Long roleId) throws Exception;
+
 }
