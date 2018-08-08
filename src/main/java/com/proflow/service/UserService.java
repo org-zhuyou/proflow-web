@@ -3,6 +3,7 @@ package com.proflow.service;
 import com.proflow.entity.User;
 import com.baomidou.mybatisplus.service.IService;
 import com.proflow.entity.vo.UserVO;
+import com.proflow.web.form.UserForm;
 
 /**
  * <p>
@@ -18,7 +19,7 @@ public interface UserService extends IService<User> {
 
     User findUserByUsername(String username) throws Exception;
 
-    User save(User user) throws Exception;
+    User save(UserForm userForm) throws Exception;
 
     boolean delete(Long id) throws Exception;
 
