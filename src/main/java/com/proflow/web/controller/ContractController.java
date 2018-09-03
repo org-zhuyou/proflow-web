@@ -31,7 +31,12 @@ public class ContractController {
     @Autowired
     private ProjectContractService projectContractService;
 
-    // 保存合同
+    /**
+     * 保存合同
+     * @param contract
+     * @param createProject
+     * @return
+     */
     @PostMapping("/save")
     public Object save(ProjectContract contract, Boolean createProject) {
         ResultForm<?> resultForm = null;
@@ -88,6 +93,25 @@ public class ContractController {
             resultForm = ResultForm.createError(e.getMessage());
         }
 
+        return resultForm;
+    }
+
+    /**
+     * 查询合同相关资源
+     * @param contractId
+     * @return
+     */
+    @PostMapping("/findContractResourceVO")
+    public Object findContractResourceVO(Long contractId) {
+        ResultForm<?> resultForm = null;
+        try {
+            List<ProjectContractResourceVO> list = projectContractService.getProjectContractVO(contractId);
+            resultForm = ResultForm.createSuccess("查询", list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
         return resultForm;
     }
 

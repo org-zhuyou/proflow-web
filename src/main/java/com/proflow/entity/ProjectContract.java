@@ -28,6 +28,9 @@ public class ProjectContract extends Model<ProjectContract> {
      * 合同类型 1 总包合同 2 分包合同
      */
 	private Integer type;
+
+	public static final Integer MAIN = 1;
+	public static final Integer SUB = 2;
     /**
      * 合同编号
      */

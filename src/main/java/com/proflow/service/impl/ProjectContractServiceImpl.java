@@ -69,10 +69,11 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
             } else {
                 project = createProjectByContract(projectContract, new Project());
             }
+            if (!projectService.insertOrUpdate(project)) {
+                throw new Exception("项目信息保存失败");
+            }
         }
-        if (!projectService.insertOrUpdate(project)) {
-            throw new Exception("项目信息保存失败");
-        }
+
         return projectContract;
     }
 
