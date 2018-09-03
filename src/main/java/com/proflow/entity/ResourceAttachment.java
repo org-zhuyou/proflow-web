@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -29,7 +30,7 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
     /**
      * 文件大小
      */
-	private Integer size;
+	private Long size;
     /**
      * local资源路径
      */
@@ -42,6 +43,11 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
      * 资源类型
      */
 	private Integer type;
+
+	private Date createTime;
+
+	public static final Integer LOCAL = 1;
+	public static final Integer REMOTE = 2;
 
 
 	public Long getId() {
@@ -68,11 +74,11 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
 		this.url = url;
 	}
 
-	public Integer getSize() {
+	public Long getSize() {
 		return size;
 	}
 
-	public void setSize(Integer size) {
+	public void setSize(Long size) {
 		this.size = size;
 	}
 
@@ -98,6 +104,14 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Override

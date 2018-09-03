@@ -97,6 +97,7 @@ CREATE TABLE `project_contract_resource` (
   `project_contract_id` bigint(20) NOT NULL,
   --`project_id` bigint(20) NOT NULL,
   `sort` int(2) NOT NULL COMMENT '排序',
+  `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='项目合同资源表';
 
@@ -165,5 +166,6 @@ CREATE TABLE `resource_attachment` (
   `file_path` varchar(500) NOT NULL COMMENT 'local资源路径',
   `suffix` varchar(20) NOT NULL COMMENT '文件后缀',
   `type` int(2) NOT NULL COMMENT '资源类型',
+  `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='资源附件表';

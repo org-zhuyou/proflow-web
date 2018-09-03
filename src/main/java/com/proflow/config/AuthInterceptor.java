@@ -30,6 +30,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        if (handler instanceof org.springframework.web.servlet.resource.ResourceHttpRequestHandler) {
+            return super.preHandle(request, response, handler);
+        }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
         NoAuth auth = handlerMethod.getMethodAnnotation(NoAuth.class);
