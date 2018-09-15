@@ -30,7 +30,7 @@ public class LoginController {
     public Object login(String username, String password, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
         try {
-            UserVO userVO = localSessionService.login(username, password, 1000*60*30);
+            UserVO userVO = localSessionService.login(username.trim(), password.trim(), 1000*60*30);
             resultForm = ResultForm.createSuccess("登录成功",userVO);
         } catch (Exception e) {
             resultForm = ResultForm.createError(e.getMessage());

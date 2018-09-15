@@ -7,6 +7,7 @@ import com.proflow.entity.ProjectSubpackage;
 import com.proflow.service.ProjectService;
 import com.proflow.service.ProjectSubpackageService;
 import com.proflow.web.form.ResultForm;
+import com.proflow.web.utils.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +39,7 @@ public class SubpackageController {
      * @return
      */
     @PostMapping("/saveSubPackage")
-    public Object saveSubPackage(ProjectSubpackage projectSubpackage) {
+    public Object saveSubPackage(ProjectSubpackage projectSubpackage, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
         try {
             if (projectSubpackage.getProjectId() == null) {
@@ -50,8 +53,12 @@ public class SubpackageController {
             if (project.getType().equals(ProjectContract.SUB)) {
                 throw new Exception("分包项目不能创建分包信息");
             }
+            if (projectSubpackage.getId() == null) {
+                projectSubpackage.setCreateUser(SessionUtil.getCurrentUserId(request));
+                projectSubpackage.setCreateTime(new Date());
+            }
             boolean result = projectSubpackageService.insertOrUpdate(projectSubpackage);
-            resultForm = ResultForm.createSuccess("保存成功", null);
+            resultForm = ResultForm.createSuccess("保存成功", projectSubpackage);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -71,6 +78,24 @@ public class SubpackageController {
         try {
             List<ProjectSubpackage> subpackageList = projectSubpackageService.selectList(Condition.create().eq("project_id", projectId).orderBy("type", true));
             resultForm = ResultForm.createSuccess("查询成功", subpackageList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+
+
+    @PostMapping("/deleteProjectSubPackage")
+    public Object deleteProjectSubPackage(Long subPackageId) {
+        ResultForm<?> resultForm = null;
+        try {
+            if (projectSubpackageService.deleteById(subPackageId)) {
+                resultForm = ResultForm.createSuccess("删除成功", null);
+            } else {
+                resultForm = ResultForm.createError("删除失败，请稍后再试");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());

@@ -45,6 +45,8 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
     private ResourceAttachmentService resourceAttachmentService;
     @Autowired
     private ProjectContractResourceService projectContractResourceService;
+    @Autowired
+    private ProjectContractService projectContractService;
 
     @Value("${resource.local.path}")
     private String RESOURCE_LOCAL_PATH;
@@ -58,6 +60,7 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         // 如果是修改的话  不修改项目信息
         //createProject = projectContract.getId() != null ? false : createProject;
         Long contractId = projectContract.getId();
+        projectContract.setCreateTime(new Date());
         if (!this.insertOrUpdate(projectContract)) {
             throw new Exception("合同信息保存失败");
         }
@@ -89,7 +92,7 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void uploadContractAttachment(Long contractId, MultipartFile file) throws Exception {
+    public ResourceAttachment uploadContractAttachment(Long contractId, MultipartFile file) throws Exception {
         if (contractId == null) {
             throw new IllegalArgumentException();
         }
@@ -97,9 +100,9 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         if(null == projectContract) {
             throw new Exception("合同信息不存在");
         }
-
+        Long time = System.currentTimeMillis();
         // TODO 保存在本地
-        File file1 = new File(RESOURCE_LOCAL_PATH + "/" + file.getOriginalFilename());
+        File file1 = new File(RESOURCE_LOCAL_PATH + "/" + time + file.getOriginalFilename());
         file.transferTo(file1);
 
         // 创建个资源 ResourceAttachment
@@ -107,7 +110,7 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         resourceAttachment.setFilePath(file1.getPath());
         resourceAttachment.setName(file1.getName());
         resourceAttachment.setSize(file1.length());
-        resourceAttachment.setSuffix(FileUtil.extName(file.getName()));
+        resourceAttachment.setSuffix(FileUtil.extName(file1.getName()));
         resourceAttachment.setType(ResourceAttachment.LOCAL);
         resourceAttachment.setCreateTime(new Date());
         resourceAttachmentService.insert(resourceAttachment);
@@ -117,7 +120,10 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         projectContractResource.setResourceAttachmentId(resourceAttachment.getId());
         projectContractResource.setProjectContractId(projectContract.getId());
         projectContractResource.setCreateTime(new Date());
+        projectContractResource.setSort(0);
         projectContractResourceService.insert(projectContractResource);
+
+        return resourceAttachment;
 
     }
 
@@ -131,10 +137,10 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
             throw new Exception("合同信息不存在");
         }
 
-        List<ProjectContract> projectContractList = projectContractResourceService.selectList
+        List<ProjectContractResource> projectContractList = projectContractResourceService.selectList
                 (Condition.create().eq("project_contract_id", contractId).orderBy("create_time", true));
         List<ProjectContractResourceVO> voList = new ArrayList<>();
-        for (ProjectContract contract : projectContractList) {
+        for (ProjectContractResource contract : projectContractList) {
             ProjectContractResourceVO vo = new ProjectContractResourceVO();
             BeanUtil.copyProperties(contract, vo);
             ResourceAttachment resourceAttachment = resourceAttachmentService.selectById(vo.getResourceAttachmentId());
@@ -144,15 +150,9 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         return voList;
     }
 
-//    public static void main(String[] args) {
-//        File file = new File("/Users/fancy/Downloads/ttttt.txt");
-//        System.out.println(file.getPath());
-//        System.out.println(file.getName());
-//        System.out.println(FileUtil.extName(file.getName()));
-//    }
-
 
     private Project createProjectByContract(ProjectContract projectContract, Project project) {
+        project.setName(projectContract.getName());
         project.setProjectContractId(projectContract.getId());
         project.setAddress(projectContract.getAddress());
         project.setEndDate(projectContract.getEndDate());
@@ -162,6 +162,8 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         project.setTimeLimit(projectContract.getTimeLimit());
         project.setTotalAmount(projectContract.getTotalAmount());
         project.setType(projectContract.getType());
+        project.setCreateTime(new Date());
+        project.setCreateUser(projectContract.getCreateUser());
         return project;
     }
 }

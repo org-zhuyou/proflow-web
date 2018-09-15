@@ -34,27 +34,30 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        if (handler instanceof  HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
 
-        NoAuth auth = handlerMethod.getMethodAnnotation(NoAuth.class);
-        if (null != auth) {
-            response.setHeader("Content-type", "text/html;charset=UTF-8");
-            //response.setHeader("Access-Control-Allow-Origin", "*");
-            //response.setHeader("Access-Control-Allow-Headers", "x-auth-token,Content-Type");
-            response.setCharacterEncoding("utf-8");
-            String token = request.getHeader(_token);
-            ResultForm resultForm = null;
-            LocalSession localSession = localSessionService.getLocalSessionByToken(token);
-            if (localSession != null) {
-                request.getSession().setAttribute(session_key, localSession);
-                return super.preHandle(request, response, handler);
-            } else {
-                resultForm = ResultForm.createError(msg);
-                //System.out.println(JSON.toJSONString(resultForm));
-                response.getWriter().print(JSON.toJSONString(resultForm));
-                response.getWriter().flush();
-                response.getWriter().close();
-                return false;
+            NoAuth auth = handlerMethod.getMethodAnnotation(NoAuth.class);
+            if (null != auth) {
+                response.setHeader("Content-type", "text/html;charset=UTF-8");
+                response.setHeader("Access-Control-Allow-Origin", "*");
+                response.setHeader("Access-Control-Allow-Headers", "x-auth-token,Content-Type");
+                response.setHeader("Access-Control-Allow-Headers", "_token,Content-Type");
+                response.setCharacterEncoding("utf-8");
+                String token = request.getHeader(_token);
+                ResultForm resultForm = null;
+                LocalSession localSession = localSessionService.getLocalSessionByToken(token);
+                if (localSession != null) {
+                    request.getSession().setAttribute(session_key, localSession);
+                    return super.preHandle(request, response, handler);
+                } else {
+                    resultForm = ResultForm.createError(msg);
+                    //System.out.println(JSON.toJSONString(resultForm));
+                    response.getWriter().print(JSON.toJSONString(resultForm));
+                    response.getWriter().flush();
+                    response.getWriter().close();
+                    return false;
+                }
             }
         }
         return super.preHandle(request, response, handler);

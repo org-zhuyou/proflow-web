@@ -3,6 +3,7 @@ package com.proflow.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.entity.ProjectContract;
 import com.baomidou.mybatisplus.service.IService;
+import com.proflow.entity.ResourceAttachment;
 import com.proflow.entity.vo.ProjectContractResourceVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ public interface ProjectContractService extends IService<ProjectContract> {
 
     Page<ProjectContract> page(Page<ProjectContract> page, ProjectContract condition) throws Exception;
 
-    void uploadContractAttachment(Long contractId, MultipartFile file) throws Exception;
+    ResourceAttachment uploadContractAttachment(Long contractId, MultipartFile file) throws Exception;
 
     List<ProjectContractResourceVO> getProjectContractVO(Long contractId) throws Exception;
 
