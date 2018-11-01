@@ -35,4 +35,6 @@ public interface LocalSessionService extends IService<LocalSession> {
      */
     LocalSession getLocalSessionByToken(String token) throws Exception;
 
+    void logout(String token) throws Exception;
+
 }

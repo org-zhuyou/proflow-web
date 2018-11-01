@@ -1,7 +1,10 @@
 package com.proflow.web.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.mapper.Condition;
+import com.proflow.annotation.NoAuth;
 import com.proflow.entity.*;
 import com.proflow.entity.vo.ProjectPhaseAttrVO;
 import com.proflow.service.*;
@@ -51,6 +54,7 @@ public class PhaseController extends BaseController {
      * @param projectPhaseId
      * @return
      */
+    @NoAuth
     @PostMapping("/listProjectPhaseFund")
     public Object listProjectPhaseFund(Long projectPhaseId) {
         ResultForm<?> resultForm = null;
@@ -71,31 +75,40 @@ public class PhaseController extends BaseController {
      * @param request
      * @return
      */
+    @NoAuth
     @PostMapping("/saveProjectPhaseFund")
     public Object saveProjectPhaseFund(ProjectPhaseFund projectPhaseFund, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
-        if (projectPhaseFund.getProjectId() == null) {
-            throw new IllegalArgumentException();
-        }
-        if (projectPhaseFund.getProjectPhaseId() == null) {
-            throw new IllegalArgumentException();
-        }
+
         Project project = null;
         ProjectPhase projectPhase = null;
         try {
-            project = projectService.selectById(projectPhaseFund.getProjectId());
-            if (project == null) {
-                throw new Exception("项目不存在");
-            }
-            projectPhase = projectPhaseService.selectById(projectPhaseFund.getProjectPhaseId());
-            if (projectPhase == null) {
-                throw new Exception("项目节点不存在");
-            }
-
             if (projectPhaseFund.getId() == null) {
+                if (projectPhaseFund.getProjectId() == null) {
+                    throw new IllegalArgumentException();
+                }
+                if (projectPhaseFund.getProjectPhaseId() == null) {
+                    throw new IllegalArgumentException();
+                }
+                project = projectService.selectById(projectPhaseFund.getProjectId());
+                if (project == null) {
+                    throw new Exception("项目不存在");
+                }
+                projectPhase = projectPhaseService.selectById(projectPhaseFund.getProjectPhaseId());
+                if (projectPhase == null) {
+                    throw new Exception("项目节点不存在");
+                }
                 projectPhaseFund.setStatus(0);
                 projectPhaseFund.setCreateTime(new Date());
                 projectPhaseFund.setCreateUser(SessionUtil.getCurrentUserId(request));
+            } else {
+                ProjectPhaseFund projectPhaseFund2 = projectPhaseFundService.selectById(projectPhaseFund.getId());
+                CopyOptions copyOptions = CopyOptions.create();
+                copyOptions.setIgnoreNullValue(true);
+                BeanUtil.copyProperties(projectPhaseFund2, projectPhaseFund, copyOptions);
+                if (projectPhaseFund.getComplete()!= null) {
+                    projectPhaseFund.setValidator(SessionUtil.getCurrentUser(request).getName());
+                }
             }
 
             if (projectPhaseFundService.insertOrUpdate(projectPhaseFund)) {
@@ -116,6 +129,7 @@ public class PhaseController extends BaseController {
      * @param projectId
      * @return
      */
+    @NoAuth
     @PostMapping("/listProjectPhase")
     public Object listProjectPhase(Long projectId) {
         ResultForm<?> resultForm = null;
@@ -136,6 +150,7 @@ public class PhaseController extends BaseController {
      * @param request
      * @return
      */
+    @NoAuth
     @PostMapping("/saveProjectPhase")
     public Object saveProjectPhase(ProjectPhase projectPhase, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
@@ -166,7 +181,7 @@ public class PhaseController extends BaseController {
         return resultForm;
     }
 
-
+    @NoAuth
     @PostMapping("/deleteProjectPhaseFund")
     public Object deleteProjectPhaseFund(Long phaseFundId) {
         ResultForm<?> resultForm = null;
@@ -196,6 +211,7 @@ public class PhaseController extends BaseController {
      * @param phaseId
      * @return
      */
+    @NoAuth
     @PostMapping("/deleteProjectPhase")
     public Object deleteProjectPhase(Long phaseId) {
         ResultForm<?> resultForm = null;
@@ -237,6 +253,7 @@ public class PhaseController extends BaseController {
      * @param phaseId
      * @return
      */
+    @NoAuth
     @PostMapping("/uploadPhaseResource")
     public Object uploadPhaseResource(Long phaseId, @RequestParam("file") MultipartFile file) {
         ResultForm<?> resultForm = null;
@@ -257,6 +274,7 @@ public class PhaseController extends BaseController {
      * @param phaseId
      * @return
      */
+    @NoAuth
     @PostMapping("/listProjectPhaseAttrsVO")
     public Object listProjectPhaseAttrsVO(Long phaseId) {
         ResultForm<?> resultForm = null;
@@ -276,6 +294,7 @@ public class PhaseController extends BaseController {
      * @param resourceId
      * @return
      */
+    @NoAuth
     @PostMapping("/deletePhaseResource")
     public Object deletePhaseResource(Long resourceId) {
         ResultForm<?> resultForm = null;

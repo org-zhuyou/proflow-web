@@ -3,6 +3,7 @@ package com.proflow.web.controller;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.proflow.annotation.NoAuth;
 import com.proflow.entity.Project;
 import com.proflow.service.ProjectContractService;
 import com.proflow.service.ProjectService;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/project")
-public class ProjectController {
+public class ProjectController extends BaseController {
 
     private static Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
@@ -28,7 +29,21 @@ public class ProjectController {
     private ProjectService projectService;
     @Autowired
     private ProjectContractService projectContractService;
-
+    @NoAuth
+    @PostMapping("/deleteProject")
+    public Object deleteProject(Long id) {
+        ResultForm<?> resultForm = null;
+        try {
+            projectService.deleteProject(id);
+            resultForm = ResultForm.createSuccess("删除成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+    @NoAuth
     @PostMapping("/saveProject")
     public Object saveProject(Project project) {
         ResultForm<?> resultForm = null;
@@ -49,6 +64,8 @@ public class ProjectController {
         return resultForm;
     }
 
+
+    @NoAuth
     @RequestMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;
@@ -62,7 +79,7 @@ public class ProjectController {
         }
         return resultForm;
     }
-
+    @NoAuth
     @RequestMapping("/page")
     public Object page(Project project, PageForm<Project> pageForm) {
         ResultForm<?> resultForm = null;

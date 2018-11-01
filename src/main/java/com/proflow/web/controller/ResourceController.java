@@ -55,6 +55,17 @@ public class ResourceController {
                 byte[] result = FileUtil.readBytes(file);
                 response.setContentLength(result.length);
                 response.setCharacterEncoding("utf-8");
+                if (resourceAttachment.getSuffix().equals("xls") || resourceAttachment.getSuffix().equals("xlsx")) {
+                    response.setContentType("application/vnd.ms-excel;charset=utf-8");
+                    response.setHeader("Content-Disposition", "attachment; filename="
+                            + new String(resourceAttachment.getName().getBytes(), "ISO8859-1"));
+                } else if (resourceAttachment.getSuffix().equals("pdf")) {
+                    response.setContentType("application/pdf;charset=utf-8");
+                } else if (resourceAttachment.getSuffix().equals("doc") || resourceAttachment.getSuffix().equals("docx")) {
+                    response.setContentType("application/msword;charset=utf-8");
+                    response.setHeader("Content-Disposition", "attachment; filename="
+                            + new String(resourceAttachment.getName().getBytes(), "ISO8859-1"));
+                }
                 //response.setHeader("Content-type", "application/pdf;charset=utf-8");
                 response.getOutputStream().write(result);
                 response.getOutputStream().flush();

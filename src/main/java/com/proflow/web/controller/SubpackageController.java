@@ -1,6 +1,7 @@
 package com.proflow.web.controller;
 
 import com.baomidou.mybatisplus.mapper.Condition;
+import com.proflow.annotation.NoAuth;
 import com.proflow.entity.Project;
 import com.proflow.entity.ProjectContract;
 import com.proflow.entity.ProjectSubpackage;
@@ -38,6 +39,7 @@ public class SubpackageController {
      * @param projectSubpackage
      * @return
      */
+    @NoAuth
     @PostMapping("/saveSubPackage")
     public Object saveSubPackage(ProjectSubpackage projectSubpackage, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
@@ -72,6 +74,7 @@ public class SubpackageController {
      * @param projectId
      * @return
      */
+    @NoAuth
     @PostMapping("/findProjectSubPackage")
     public Object findProjectSubPackage(Long projectId) {
         ResultForm<?> resultForm = null;
@@ -86,7 +89,7 @@ public class SubpackageController {
         return resultForm;
     }
 
-
+    @NoAuth
     @PostMapping("/deleteProjectSubPackage")
     public Object deleteProjectSubPackage(Long subPackageId) {
         ResultForm<?> resultForm = null;

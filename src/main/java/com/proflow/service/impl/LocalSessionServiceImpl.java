@@ -1,6 +1,7 @@
 package com.proflow.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.proflow.entity.LocalSession;
@@ -57,6 +58,9 @@ public class LocalSessionServiceImpl extends ServiceImpl<LocalSessionMapper, Loc
 
     @Override
     public LocalSession getLocalSessionByToken(String token) throws Exception {
+        if (StrUtil.isBlank(token)) {
+            return null;
+        }
         LocalSession localSession = localSessionByToken(token);
         Date now = new Date();
         if (localSession != null && localSession.getStatus().equals(LocalSession.VALID)) {
@@ -66,6 +70,14 @@ public class LocalSessionServiceImpl extends ServiceImpl<LocalSessionMapper, Loc
             this.deleteById(localSession.getId());
         }
         return null;
+    }
+
+    @Override
+    public void logout(String token) throws Exception {
+        if (StrUtil.isBlank(token)) {
+            return;
+        }
+        this.delete(Condition.create().eq("token", token));
     }
 
     private LocalSession localSessionByToken(String token) throws Exception {

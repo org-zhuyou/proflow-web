@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +60,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         Role role = new Role();
         BeanUtil.copyProperties(roleForm, role);
 
+        if (role.getId() == null) {
+            role.setCreateTime(new Date());
+        }
+        role.setModifyTime(new Date());
         if (!this.insertOrUpdate(role)) {
             throw new Exception("保存角色信息失败");
         }

@@ -1,12 +1,14 @@
 package com.proflow.web.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.proflow.annotation.NoAuth;
 import com.proflow.entity.ProjectContract;
 import com.proflow.entity.ProjectContractResource;
 import com.proflow.entity.ResourceAttachment;
 import com.proflow.entity.vo.ProjectContractResourceVO;
 import com.proflow.service.ProjectContractResourceService;
 import com.proflow.service.ProjectContractService;
+import com.proflow.service.ProjectService;
 import com.proflow.service.ResourceAttachmentService;
 import com.proflow.web.form.PageForm;
 import com.proflow.web.form.ResultForm;
@@ -41,6 +43,8 @@ public class ContractController extends BaseController {
     private ProjectContractResourceService projectContractResourceService;
     @Autowired
     private ResourceAttachmentService resourceAttachmentService;
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * 保存合同
@@ -48,6 +52,7 @@ public class ContractController extends BaseController {
      * @param createProject
      * @return
      */
+    @NoAuth
     @PostMapping("/save")
     public Object save(ProjectContract contract, Boolean createProject, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
@@ -70,10 +75,14 @@ public class ContractController extends BaseController {
      * @param contractId
      * @return
      */
+    @NoAuth
     @PostMapping("/delete")
     public Object delete(Long contractId) {
         ResultForm<?> resultForm = null;
         try {
+            if (projectService.findProjectByContractId(contractId) != null ) {
+                throw new Exception("有项目隶属于此合同，无法删除");
+            }
             projectContractService.deleteById(contractId);
             resultForm = ResultForm.createSuccess("删除成功", null);
         } catch (Exception e) {
@@ -89,6 +98,7 @@ public class ContractController extends BaseController {
      * @param id
      * @return
      */
+    @NoAuth
     @PostMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;
@@ -114,6 +124,7 @@ public class ContractController extends BaseController {
      * @param contractId
      * @return
      */
+    @NoAuth
     @PostMapping("/findContractResourceVO")
     public Object findContractResourceVO(Long contractId) {
         ResultForm<?> resultForm = null;
@@ -134,6 +145,7 @@ public class ContractController extends BaseController {
      * @param resourceId
      * @return
      */
+    @NoAuth
     @PostMapping("/deleteContractResource")
     public Object deleteContractResource(Long resourceId) {
         ResultForm<?> resultForm = null;
@@ -167,6 +179,7 @@ public class ContractController extends BaseController {
      * @param projectContract
      * @return
      */
+    @NoAuth
     @PostMapping("/page")
     public Object page(PageForm<ProjectContract> pageForm, ProjectContract projectContract) {
         ResultForm<?> resultForm = null;
@@ -187,6 +200,7 @@ public class ContractController extends BaseController {
      * @param contractId
      * @return
      */
+    @NoAuth
     @PostMapping("/uploadContractResource")
     public Object uploadContractResource(Long contractId, @RequestParam("file") MultipartFile file) {
         ResultForm<?> resultForm = null;

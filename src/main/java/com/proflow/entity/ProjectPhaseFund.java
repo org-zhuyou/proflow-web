@@ -55,7 +55,7 @@ public class ProjectPhaseFund extends Model<ProjectPhaseFund> {
     /**
      * 确认人
      */
-	private Long validator;
+	private String validator;
     /**
      * 创建人
      */
@@ -135,11 +135,11 @@ public class ProjectPhaseFund extends Model<ProjectPhaseFund> {
 		this.remark = remark;
 	}
 
-	public Long getValidator() {
+	public String getValidator() {
 		return validator;
 	}
 
-	public void setValidator(Long validator) {
+	public void setValidator(String validator) {
 		this.validator = validator;
 	}
 

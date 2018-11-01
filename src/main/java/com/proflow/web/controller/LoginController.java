@@ -31,7 +31,20 @@ public class LoginController {
         ResultForm<?> resultForm = null;
         try {
             UserVO userVO = localSessionService.login(username.trim(), password.trim(), 1000*60*30);
+            //request.getSession().setAttribute(SessionConstant.SESSION_USER, userVO);
             resultForm = ResultForm.createSuccess("登录成功",userVO);
+        } catch (Exception e) {
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+        return resultForm;
+    }
+
+    @RequestMapping("/logout")
+    public Object logout(String token) {
+        ResultForm<?> resultForm = null;
+        try {
+            localSessionService.logout(token);
+            resultForm = ResultForm.createSuccess("注销成功",null);
         } catch (Exception e) {
             resultForm = ResultForm.createError(e.getMessage());
         }
