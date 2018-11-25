@@ -1,5 +1,6 @@
 package com.proflow.entity.vo;
 
+import com.proflow.entity.LocalSession;
 import com.proflow.entity.Menu;
 import com.proflow.entity.Role;
 import com.proflow.entity.User;
@@ -15,6 +16,8 @@ public class UserVO extends User {
 
     private List<Menu> menus;
 
+    private LocalSession localSession;
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -29,5 +32,13 @@ public class UserVO extends User {
 
     public void setMenus(List<Menu> menus) {
         this.menus = menus;
+    }
+
+    public LocalSession getLocalSession() {
+        return localSession;
+    }
+
+    public void setLocalSession(LocalSession localSession) {
+        this.localSession = localSession;
     }
 }

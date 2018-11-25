@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -24,10 +25,13 @@ public class ProjectContractResource extends Model<ProjectContractResource> {
 	private String name;
 	private Long resourceAttachmentId;
 	private Long projectContractId;
+
     /**
      * 排序
      */
 	private Integer sort;
+
+	private Date createTime;
 
 
 	public Long getId() {
@@ -68,6 +72,14 @@ public class ProjectContractResource extends Model<ProjectContractResource> {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Override

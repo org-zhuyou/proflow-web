@@ -97,6 +97,7 @@ CREATE TABLE `project_contract_resource` (
   `project_contract_id` bigint(20) NOT NULL,
   --`project_id` bigint(20) NOT NULL,
   `sort` int(2) NOT NULL COMMENT '排序',
+  `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='项目合同资源表';
 
@@ -118,6 +119,7 @@ CREATE TABLE `project_phase` (
  `id` bigint(20) NOT NULL,
  `name` varchar(50) NOT NULL COMMENT '节点名称',
  `project_id` bigint(20) NOT NULL COMMENT '项目id',
+ -- `status` int(2) NOT NULL COMMENT '节点状态 0 未填写 1 已填写',
  `complete` int(3) NOT NULL COMMENT '完成情况 0-100',
  `time_limit` int(6) NOT NULL COMMENT '工期/天',
  `start_date` datetime NOT NULL COMMENT '开始时间',
@@ -138,6 +140,7 @@ CREATE TABLE `project_phase_fund` (
   `amount`  decimal(10,2) NOT NULL COMMENT '金额',
   `actual_amount` decimal(10,2) NOT NULL COMMENT '实际金额',
   `complete` int(3) NOT NULL COMMENT '完成情况 0-100',
+  --`state` int(2) NOT NULL COMMENT '0 未填写 1 已填写',
   `status` int(2) NOT NULL COMMENT '状态 0 财务未确认 0 财务已确认',
   `remark` text NOT NULL COMMENT '备注',
   `validator` bigint(20) NOT NULL COMMENT '确认人',
@@ -165,5 +168,6 @@ CREATE TABLE `resource_attachment` (
   `file_path` varchar(500) NOT NULL COMMENT 'local资源路径',
   `suffix` varchar(20) NOT NULL COMMENT '文件后缀',
   `type` int(2) NOT NULL COMMENT '资源类型',
+  `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='资源附件表';

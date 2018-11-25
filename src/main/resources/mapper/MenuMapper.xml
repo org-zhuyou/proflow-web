@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="pid" property="pid" />
         <result column="name" property="name" />
+        <result column="path" property="path" />
         <result column="code" property="code" />
         <result column="type" property="type" />
         <result column="desc" property="desc" />
@@ -15,9 +16,15 @@
 
     <select id="findMenusByUserId" resultMap="BaseResultMap">
         select m.* from menu m
-        left join role_menu rm on rm.menu_id = m.id
-        left join user_role ur on ur.role_id = rm.role_id
+        inner join role_menu rm on rm.menu_id = m.id
+        inner join user_role ur on ur.role_id = rm.role_id
         where ur.user_id = #{value}
+    </select>
+
+    <select id="findMenusByRoleId" resultMap="BaseResultMap">
+      select m.* from menu m
+        inner join role_menu rm on rm.menu_id = m.id
+        where rm.role_id = #{value}
     </select>
 
 </mapper>

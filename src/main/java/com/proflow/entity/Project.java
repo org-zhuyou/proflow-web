@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
 
@@ -76,10 +78,14 @@ public class Project extends Model<Project> {
 	}
 
 	public String getName() {
+
 		return name;
 	}
 
 	public void setName(String name) {
+		if (StrUtil.isBlank(name)) {
+			return;
+		}
 		this.name = name;
 	}
 

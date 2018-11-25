@@ -9,6 +9,7 @@
         <result column="resource_attachment_id" property="resourceAttachmentId" />
         <result column="project_contract_id" property="projectContractId" />
         <result column="sort" property="sort" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
 </mapper>

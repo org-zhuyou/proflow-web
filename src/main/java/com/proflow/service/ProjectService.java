@@ -15,4 +15,6 @@ public interface ProjectService extends IService<Project> {
 
     Project findProjectByContractId(Long contractId) throws Exception;
 
+    void deleteProject(Long id) throws Exception;
+
 }

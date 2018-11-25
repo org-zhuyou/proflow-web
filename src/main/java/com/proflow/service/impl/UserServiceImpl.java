@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,6 +69,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public UserVO getUserVOById(Long userId) throws Exception {
+        User user = this.selectById(userId);
+        UserVO userVO = new UserVO();
+        // copy
+        BeanUtil.copyProperties(user, userVO);
+        // 获取所有角色
+        userVO.setRoles(roleService.findRolesByUserId(user.getId()));
+        // 获取所有权限
+        userVO.setMenus(menuService.findMenusByUserId(user.getId()));
+        return userVO;
+    }
+
+    @Override
     public User findUserByUsername(String username) throws Exception {
         if(StrUtil.isBlank(username)) {
             throw new Exception("请输入用户名");
@@ -97,6 +111,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(StrUtil.isNotBlank(user.getPassword())) {
             String pwd = SecureUtil.md5(user.getPassword());
             user.setPassword(pwd);
+        }
+        if (user.getId() == null) {
+            user.setCreateTime(new Date());
         }
         if (!this.insertOrUpdate(user)) {
             throw new Exception("保存失败");

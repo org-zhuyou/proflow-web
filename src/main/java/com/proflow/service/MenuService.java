@@ -2,6 +2,7 @@ package com.proflow.service;
 
 import com.proflow.entity.Menu;
 import com.baomidou.mybatisplus.service.IService;
+import com.proflow.entity.vo.MenuVO;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ public interface MenuService extends IService<Menu> {
 
     List<Menu> findMenusByUserId(Long userId) throws Exception;
 
+    List<Menu> findMenusByRoleId(Long roleId) throws Exception;
 
+    List<MenuVO> treeMenus() throws Exception;
+
+    List<MenuVO> treeMenusByUserId(Long userId) throws Exception;
 
 }

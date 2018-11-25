@@ -38,6 +38,10 @@ public class ProjectSubpackage extends Model<ProjectSubpackage> {
 	private Long createUser;
 	private Date createTime;
 
+	public static final Integer JICHU_TUJIAN = 1;
+	public static final Integer ZHUTI_TUJIAN = 2;
+	public static final Integer ZHUANGXIU = 3;
+	public static final Integer JIDIAN = 4;
 
 	public Long getId() {
 		return id;

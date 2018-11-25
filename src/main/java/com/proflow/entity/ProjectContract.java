@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
 
@@ -28,6 +30,9 @@ public class ProjectContract extends Model<ProjectContract> {
      * 合同类型 1 总包合同 2 分包合同
      */
 	private Integer type;
+
+	public static final Integer MAIN = 1;
+	public static final Integer SUB = 2;
     /**
      * 合同编号
      */
@@ -80,6 +85,9 @@ public class ProjectContract extends Model<ProjectContract> {
 	}
 
 	public void setName(String name) {
+		if (StrUtil.isBlank(name)) {
+			return;
+		}
 		this.name = name;
 	}
 
@@ -96,6 +104,9 @@ public class ProjectContract extends Model<ProjectContract> {
 	}
 
 	public void setCode(String code) {
+		if (StrUtil.isBlank(code)) {
+			return;
+		}
 		this.code = code;
 	}
 

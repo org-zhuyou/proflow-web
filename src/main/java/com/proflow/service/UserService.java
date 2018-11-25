@@ -17,6 +17,8 @@ public interface UserService extends IService<User> {
     // 登录
     UserVO login(String username, String password) throws Exception;
 
+    UserVO getUserVOById(Long userId) throws Exception;
+
     User findUserByUsername(String username) throws Exception;
 
     User save(UserForm userForm) throws Exception;

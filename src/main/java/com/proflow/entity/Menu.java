@@ -26,6 +26,8 @@ public class Menu extends Model<Menu> {
      * 菜单名称
      */
 	private String name;
+
+	private String path;
     /**
      * 菜单code
      */
@@ -86,6 +88,14 @@ public class Menu extends Model<Menu> {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	@Override
