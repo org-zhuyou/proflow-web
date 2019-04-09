@@ -6,6 +6,7 @@ import com.proflow.entity.LocalSession;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.service.LocalSessionService;
 import com.proflow.service.UserService;
+import com.proflow.web.constant.ResultCode;
 import com.proflow.web.constant.SessionConstant;
 import com.proflow.web.form.ResultForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
 
-        if (handler instanceof  HandlerMethod) {
+        if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
 
             NoAuth auth = handlerMethod.getMethodAnnotation(NoAuth.class);
@@ -60,7 +61,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     request.getSession().setAttribute(SessionConstant.SESSION_USER, userVO);
                     return super.preHandle(request, response, handler);
                 } else {
-                    resultForm = ResultForm.createError(msg);
+                    resultForm = ResultForm.createError(ResultCode.NO_LOGIN, msg);
                     //System.out.println(JSON.toJSONString(resultForm));
                     response.getWriter().print(JSON.toJSONString(resultForm));
                     response.getWriter().flush();

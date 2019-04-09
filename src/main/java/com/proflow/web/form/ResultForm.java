@@ -1,5 +1,7 @@
 package com.proflow.web.form;
 
+import com.proflow.web.constant.ResultCode;
+
 import java.io.Serializable;
 
 /**
@@ -13,8 +15,8 @@ public class ResultForm<T> implements Serializable {
 
     private T result;
 
-    public static final Integer SUCCESS = 1;
-    public static final Integer ERROR = 0;
+//    public static final Integer SUCCESS = 1;
+//    public static final Integer ERROR = 0;
 
     public ResultForm() {
 
@@ -27,13 +29,17 @@ public class ResultForm<T> implements Serializable {
     }
 
     public static <T> ResultForm<T> createSuccess(String message, T result) {
-        ResultForm<T> resultForm = new ResultForm<T>(SUCCESS, message, result);
+        ResultForm<T> resultForm = new ResultForm<T>(ResultCode.SUCCESS, message, result);
+        return resultForm;
+    }
+
+    public static <T> ResultForm<T> createError(Integer error, String message) {
+        ResultForm<T> resultForm = new ResultForm<T>(error, message, null);
         return resultForm;
     }
 
     public static <T> ResultForm<T> createError(String message) {
-        ResultForm<T> resultForm = new ResultForm<T>(ERROR, message, null);
-        return resultForm;
+        return createError(ResultCode.ERROR, message);
     }
 
     public Integer getCode() {
