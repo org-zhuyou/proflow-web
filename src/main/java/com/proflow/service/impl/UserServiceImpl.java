@@ -17,6 +17,7 @@ import com.proflow.service.UserRoleService;
 import com.proflow.service.UserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.proflow.web.form.UserForm;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,6 +132,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new Exception("保存用户角色信息失败");
         }
         return user;
+    }
+
+    @Override
+    public List<User> getUsersByRoleCode(String roleCode) throws Exception {
+        if (StringUtils.isBlank(roleCode)) {
+            throw new Exception("参数错误");
+        }
+        return this.baseMapper.getUsersByRoleCode(roleCode);
     }
 
     @Override

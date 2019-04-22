@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.service.IService;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.web.form.UserForm;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户表 服务类
@@ -22,6 +24,8 @@ public interface UserService extends IService<User> {
     User findUserByUsername(String username) throws Exception;
 
     User save(UserForm userForm) throws Exception;
+    
+    List<User> getUsersByRoleCode(String roleCode) throws Exception;
 
     boolean delete(Long id) throws Exception;
 

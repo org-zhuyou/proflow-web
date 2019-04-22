@@ -17,4 +17,12 @@ public interface ProjectService extends IService<Project> {
 
     void deleteProject(Long id) throws Exception;
 
+    /**
+     * 分配所属人
+     * @param ownerId
+     * @param projectId
+     * @throws Exception
+     */
+    boolean distributeOwner(Long ownerId, Long projectId) throws Exception;
+
 }

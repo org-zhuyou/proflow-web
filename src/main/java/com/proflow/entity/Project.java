@@ -62,6 +62,11 @@ public class Project extends Model<Project> {
      * 合同id
      */
 	private Long projectContractId;
+
+	/**
+	 * 所属人id
+	 */
+	private Long ownerId;
     /**
      * 创建人
      */
@@ -175,6 +180,14 @@ public class Project extends Model<Project> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	@Override

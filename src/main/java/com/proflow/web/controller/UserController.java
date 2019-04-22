@@ -60,6 +60,24 @@ public class UserController {
         System.out.println(JSON.toJSONString(userForm));
         return JSON.toJSONString(userForm);
     }
+
+    @NoAuth
+    @PostMapping("/getUserByRole")
+    public Object getUserByRole(String roleCode) {
+
+        ResultForm<?> resultForm = null;
+        try {
+            List<User> users = userService.getUsersByRoleCode(roleCode);
+            resultForm = ResultForm.createSuccess("查询成功", users);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError(e.getMessage());
+        }
+
+        return resultForm;
+    }
+
     @NoAuth
     @PostMapping("/getMenusByUserId")
     public Object getMenusByUserId(Long userId) {

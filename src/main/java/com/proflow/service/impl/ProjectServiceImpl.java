@@ -37,6 +37,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Autowired
     private ProjectPhaseAttachmentService projectPhaseAttachmentService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public Project findProjectByContractId(Long contractId) throws Exception {
         if (ObjectUtil.isNull(contractId)) {
@@ -71,5 +74,24 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         this.projectSubpackageService.delete(Condition.create().eq("project_id", id));
         this.projectPhaseAttachmentService.delete(Condition.create().eq("project_id", id));
 
+    }
+
+    @Override
+    public boolean distributeOwner(Long ownerId, Long projectId) throws Exception {
+        if (ownerId == null || projectId == null) {
+            throw new Exception("参数错误");
+        }
+        User user = userService.selectById(ownerId);
+        if (user == null) {
+            throw new Exception("未知的项目所属人");
+        }
+
+        Project project = this.selectById(projectId);
+        if (project == null) {
+            throw new Exception("项目信息有误");
+        }
+
+        project.setOwnerId(ownerId);
+        return project.updateById();
     }
 }

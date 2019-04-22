@@ -17,4 +17,15 @@
         <result column="del_flag" property="delFlag" />
     </resultMap>
 
+    <select id="getUsersByRoleCode" resultMap="BaseResultMap">
+        SELECT
+            u.*
+        FROM
+            USER u
+        LEFT JOIN user_role ur ON u.id = ur.user_id
+        LEFT JOIN role r ON r.id = ur.role_id
+        WHERE
+            r.`code` = #{value}
+    </select>
+
 </mapper>

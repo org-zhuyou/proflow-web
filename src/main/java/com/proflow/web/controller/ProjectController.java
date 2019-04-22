@@ -29,6 +29,22 @@ public class ProjectController extends BaseController {
     private ProjectService projectService;
     @Autowired
     private ProjectContractService projectContractService;
+
+    @NoAuth
+    @PostMapping("/distributeOwner")
+    public Object distributeOwner(Long projectId, Long onwerId) {
+        ResultForm<?> resultForm = null;
+        try {
+            projectService.distributeOwner(onwerId, projectId);
+            resultForm = ResultForm.createSuccess("分配成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError("系统繁忙，请稍后再试");
+        }
+        return resultForm;
+    }
+
     @NoAuth
     @PostMapping("/deleteProject")
     public Object deleteProject(Long id) {
