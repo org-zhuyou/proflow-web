@@ -1,8 +1,12 @@
 package com.proflow.config;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSON;
 import com.proflow.annotation.NoAuth;
 import com.proflow.entity.LocalSession;
+import com.proflow.entity.Menu;
+import com.proflow.entity.Role;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.service.LocalSessionService;
 import com.proflow.service.UserService;
@@ -16,6 +20,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Leonid on 2018/7/3.
@@ -27,6 +34,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public static final String _token = "_token";
 
     public static final String msg = "请登录后操作";
+
+    public static final String authMsg = "无操作权限";
 
     public static final String session_key = "proflow_session";
 
@@ -59,10 +68,25 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     UserVO userVO = userService.getUserVOById(localSession.getUserId());
                     request.getSession().setAttribute(session_key, localSession);
                     request.getSession().setAttribute(SessionConstant.SESSION_USER, userVO);
+                    //
+                    // TODO 判断是否有相关权限
+                    String[] auths = auth.auth();
+                    List<String> roles = userVO.getMenus().stream().map(e -> e.getCode()).collect(Collectors.toList());
+                    List<String> aus = Arrays.asList(auths);
+
+                    if (CollUtil.isNotEmpty(aus)) {
+                        if (!roles.containsAll(aus)) {
+                            resultForm = ResultForm.createError(ResultCode.NO_AUTH, authMsg);
+                            response.getWriter().print(JSON.toJSONString(resultForm));
+                            response.getWriter().flush();
+                            response.getWriter().close();
+                            return false;
+                        }
+                    }
+
                     return super.preHandle(request, response, handler);
                 } else {
                     resultForm = ResultForm.createError(ResultCode.NO_LOGIN, msg);
-                    //System.out.println(JSON.toJSONString(resultForm));
                     response.getWriter().print(JSON.toJSONString(resultForm));
                     response.getWriter().flush();
                     response.getWriter().close();

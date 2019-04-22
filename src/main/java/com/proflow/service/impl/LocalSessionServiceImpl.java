@@ -1,11 +1,11 @@
 package com.proflow.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.proflow.entity.LocalSession;
-import com.proflow.entity.User;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.mapper.LocalSessionMapper;
 import com.proflow.service.*;
@@ -30,7 +30,7 @@ public class LocalSessionServiceImpl extends ServiceImpl<LocalSessionMapper, Loc
         // 认证成功后
         UserVO userVO = userService.login(username, password);
         LocalSession session = LocalSession.create(timeout);
-        session.setContextJson("{}");
+        session.setContextJson(JSON.toJSONString(userVO));
         session.setUserId(userVO.getId());
         if (!this.insert(session)) {
             throw new Exception("系统繁忙请稍后再试");

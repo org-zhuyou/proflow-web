@@ -81,7 +81,7 @@ public class ProjectController extends BaseController {
     }
 
 
-    @NoAuth
+    @NoAuth()
     @RequestMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;

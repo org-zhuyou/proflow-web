@@ -9,4 +9,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface NoAuth {
+
+    String value() default "";
+
+    String[] auth() default {};
+
 }
