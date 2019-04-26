@@ -1,20 +1,26 @@
 package com.proflow.web.controller;
 
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.annotation.NoAuth;
+import com.proflow.em.RoleCodeEnum;
 import com.proflow.entity.Project;
+import com.proflow.entity.vo.ProjectVO;
+import com.proflow.entity.vo.UserVO;
 import com.proflow.service.ProjectContractService;
 import com.proflow.service.ProjectService;
 import com.proflow.web.form.PageForm;
 import com.proflow.web.form.ResultForm;
+import com.proflow.web.utils.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Leonid on 2018/8/7.
@@ -30,12 +36,27 @@ public class ProjectController extends BaseController {
     @Autowired
     private ProjectContractService projectContractService;
 
-    @NoAuth
-    @PostMapping("/distributeOwner")
-    public Object distributeOwner(Long projectId, Long onwerId) {
+    //@NoAuth
+    @PostMapping("/projectView")
+    public Object projectView(Long projectId) {
         ResultForm<?> resultForm = null;
         try {
-            projectService.distributeOwner(onwerId, projectId);
+            Object obj = projectService.projectView(projectId);
+            resultForm = ResultForm.createSuccess("查询成功", obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError("系统繁忙，请稍后再试");
+        }
+        return resultForm;
+    }
+
+    @NoAuth
+    @PostMapping("/distributeOwner")
+    public Object distributeOwner(Long projectId, Long ownerId) {
+        ResultForm<?> resultForm = null;
+        try {
+            projectService.distributeOwner(ownerId, projectId);
             resultForm = ResultForm.createSuccess("分配成功", null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,12 +118,25 @@ public class ProjectController extends BaseController {
     }
     @NoAuth
     @RequestMapping("/page")
-    public Object page(Project project, PageForm<Project> pageForm) {
+    public Object page(Project project, PageForm<ProjectVO> pageForm, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
         try {
-            EntityWrapper<Project> wrapper = new EntityWrapper<>();
-            wrapper.setEntity(project);
-            Page<Project> projectPage = projectService.selectPage(pageForm.createPage(), wrapper);
+
+            //EntityWrapper<Project> wrapper = new EntityWrapper<>();
+
+
+            UserVO userVO = SessionUtil.getCurrentUser(request);
+            List<String> roleCodes = userVO.getRoles().stream().map(e -> e.getCode()).collect(Collectors.toList());
+            if (roleCodes.contains(RoleCodeEnum.ADMIN.name())
+                    || roleCodes.contains(RoleCodeEnum.BOSS.name()) || roleCodes.contains(RoleCodeEnum.CW.name())) {
+                logger.info("{pro}");
+            } else {
+                project.setOwnerId(userVO.getId());
+            }
+            //wrapper.setEntity(project);
+            //Page<Project> projectPage = projectService.selectPage(pageForm.createPage(), wrapper);
+
+            Page<ProjectVO> projectPage = projectService.pageProejct(pageForm.createPage(), project);
             resultForm = ResultForm.createSuccess("查询成功", projectPage);
         } catch (Exception e) {
             e.printStackTrace();

@@ -71,7 +71,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     //
                     // TODO 判断是否有相关权限
                     String[] auths = auth.auth();
-                    List<String> roles = userVO.getMenus().stream().map(e -> e.getCode()).collect(Collectors.toList());
+                    List<String> roles = userVO.getRoles().stream().map(e -> e.getCode()).collect(Collectors.toList());
                     List<String> aus = Arrays.asList(auths);
 
                     if (CollUtil.isNotEmpty(aus)) {

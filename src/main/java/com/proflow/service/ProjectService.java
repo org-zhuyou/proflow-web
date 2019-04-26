@@ -1,7 +1,9 @@
 package com.proflow.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.entity.Project;
 import com.baomidou.mybatisplus.service.IService;
+import com.proflow.entity.vo.ProjectVO;
 
 /**
  * <p>
@@ -12,6 +14,11 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-08-06
  */
 public interface ProjectService extends IService<Project> {
+
+
+    Object projectView(Long projectId) throws Exception;
+
+    Page<ProjectVO> pageProejct(Page<ProjectVO> page, Project project) throws Exception;
 
     Project findProjectByContractId(Long contractId) throws Exception;
 

@@ -21,7 +21,7 @@
         SELECT
             u.*
         FROM
-            USER u
+            user u
         LEFT JOIN user_role ur ON u.id = ur.user_id
         LEFT JOIN role r ON r.id = ur.role_id
         WHERE

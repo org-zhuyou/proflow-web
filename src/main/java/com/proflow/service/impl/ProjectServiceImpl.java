@@ -1,10 +1,14 @@
 package com.proflow.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.entity.*;
+import com.proflow.entity.vo.ProjectPhaseAttrVO;
+import com.proflow.entity.vo.ProjectVO;
 import com.proflow.mapper.ProjectMapper;
 import com.proflow.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -12,7 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,6 +47,44 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Autowired
     private UserService userService;
+
+    @Override
+    public Object projectView(Long projectId) throws Exception {
+        if (projectId == null) {
+            throw new IllegalArgumentException();
+        }
+        // 项目信息
+        Project project = this.selectById(projectId);
+        List<ProjectPhase> projectPhases = this.projectPhaseService.selectList(Condition.create().eq("project_Id", projectId));
+        List<ProjectPhaseAttrVO> vos = new ArrayList<>();
+
+        for (ProjectPhase projectPhase : projectPhases) {
+            List<ProjectPhaseAttrVO> volist = projectPhaseService.getProjectPhaseAttrsVO(projectPhase.getId());
+            if (CollUtil.isNotEmpty(volist)) {
+
+                vos.addAll(volist.stream().map(e -> {
+                    e.setProjectPhase(projectPhase);
+                    return e;
+                }).collect(Collectors.toList()));
+            }
+
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("project", project);
+        result.put("phaseAttr", vos);
+        return result;
+    }
+
+    @Override
+    public Page<ProjectVO> pageProejct(Page<ProjectVO> page, Project project) throws Exception {
+        if (page == null) {
+            throw new IllegalArgumentException();
+        }
+        List<ProjectVO> projectVOS = this.baseMapper.listProject(page, project);
+        page.setRecords(projectVOS);
+        return page;
+    }
 
     @Override
     public Project findProjectByContractId(Long contractId) throws Exception {

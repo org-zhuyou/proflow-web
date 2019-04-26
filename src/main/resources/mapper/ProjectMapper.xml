@@ -20,4 +20,27 @@
         <result column="create_time" property="createTime" />
     </resultMap>
 
+    <resultMap id="voBaseResultMap" extends="BaseResultMap" type="com.proflow.entity.vo.ProjectVO" >
+        <result column="owner_name" property="ownerName" />
+    </resultMap>
+
+    <select id="listProject" resultMap="voBaseResultMap">
+        SELECT
+            p.*, u.name AS owner_name
+        FROM
+            project p
+        LEFT JOIN user u ON p.owner_id = u.id
+        <where>
+            <if test="project.name != null" >
+                and p.name LIKE CONCAT('%',#{project.name},'%')
+            </if>
+            <if test="project.type != null" >
+                and p.type = #{project.type}
+            </if>
+            <if test="project.ownerId != null" >
+                and p.owner_id = #{project.ownerId}
+            </if>
+        </where>
+    </select>
+
 </mapper>
