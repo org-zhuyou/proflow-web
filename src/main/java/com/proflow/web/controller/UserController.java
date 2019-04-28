@@ -61,7 +61,7 @@ public class UserController {
         return JSON.toJSONString(userForm);
     }
 
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/getUserByRole")
     public Object getUserByRole(String roleCode) {
 
@@ -78,7 +78,7 @@ public class UserController {
         return resultForm;
     }
 
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/getMenusByUserId")
     public Object getMenusByUserId(Long userId) {
         ResultForm<?> resultForm = null;
@@ -94,7 +94,7 @@ public class UserController {
         return resultForm;
     }
 
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/save")
     public Object save(@RequestBody UserForm userForm, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
@@ -109,7 +109,7 @@ public class UserController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/delete")
     public Object delete(Long id) {
         ResultForm<?> resultForm = null;
@@ -126,7 +126,7 @@ public class UserController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;
@@ -147,7 +147,7 @@ public class UserController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/page")
     public Object page(User user, PageForm<User> pageForm) {
         ResultForm<?> resultForm = null;

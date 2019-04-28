@@ -39,7 +39,7 @@ public class RoleController {
      * @param userId
      * @return
      */
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/getRolesByUserId")
     public Object getRolesByUserId(Long userId) {
         ResultForm<?> resultForm = null;
@@ -68,7 +68,7 @@ public class RoleController {
         return JSON.toJSONString(roleForm);
     }
 
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/save")
     public Object save(@RequestBody RoleForm roleForm) {
         ResultForm<?> resultForm = null;
@@ -82,7 +82,7 @@ public class RoleController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/findById")
     public Object findById(Long id) {
         ResultForm<?> resultForm = null;
@@ -96,7 +96,7 @@ public class RoleController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/findAll")
     public Object findAll() {
         ResultForm<?> resultForm = null;
@@ -110,7 +110,7 @@ public class RoleController {
         }
         return resultForm;
     }
-    @NoAuth(auth = {"ADMIN"})
+    @NoAuth(auth = {"ADMIN","BOSS"})
     @PostMapping("/delete")
     public Object delete(Long id) {
         ResultForm<?> resultForm = null;
