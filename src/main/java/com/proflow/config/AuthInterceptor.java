@@ -75,7 +75,15 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     List<String> aus = Arrays.asList(auths);
 
                     if (CollUtil.isNotEmpty(aus)) {
-                        if (!roles.containsAll(aus)) {
+
+                        boolean ise = false;
+                        for (String rol : roles) {
+                            if (aus.contains(rol)) {
+                                ise = true;
+                            }
+                        }
+
+                        if (!ise) {
                             resultForm = ResultForm.createError(ResultCode.NO_AUTH, authMsg);
                             response.getWriter().print(JSON.toJSONString(resultForm));
                             response.getWriter().flush();
