@@ -159,9 +159,9 @@ public class ContractController extends BaseController {
 
             ResourceAttachment resourceAttachment = this.resourceAttachmentService.selectById(resourceAttrId);
             if (resourceAttachment != null) {
-                String filepath = resourceAttachment.getFilePath();
+                //String filepath = resourceAttachment.getFilePath();
                 this.resourceAttachmentService.deleteById(resourceAttachment.getId());
-                new File(filepath).delete();
+                //new File(filepath).delete();
             }
 
             resultForm = ResultForm.createSuccess("删除成功", null);
