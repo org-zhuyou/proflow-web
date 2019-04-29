@@ -2,16 +2,16 @@ package com.proflow.web.controller;
 
 import cn.hutool.core.io.FileUtil;
 import com.proflow.entity.ResourceAttachment;
+import com.proflow.service.OSSObjectService;
 import com.proflow.service.ResourceAttachmentService;
 import com.proflow.web.form.ResultForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
@@ -26,6 +26,20 @@ public class ResourceController {
 
     @Autowired
     private ResourceAttachmentService resourceAttachmentService;
+
+    @Autowired
+    private OSSObjectService ossObjectService;
+
+    @PostMapping("/test")
+    public Object test(@RequestParam("file") MultipartFile file) {
+        String filename = "";
+        try {
+            filename = ossObjectService.uploadInputStream2OSS(file.getInputStream(), file.getOriginalFilename());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filename;
+    }
 
     /**
      *

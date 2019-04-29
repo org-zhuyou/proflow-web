@@ -7,6 +7,7 @@ import com.proflow.entity.*;
 import com.proflow.entity.vo.ProjectContractResourceVO;
 import com.proflow.entity.vo.ProjectPhaseAttrVO;
 import com.proflow.mapper.ProjectPhaseMapper;
+import com.proflow.service.OSSObjectService;
 import com.proflow.service.ProjectPhaseAttachmentService;
 import com.proflow.service.ProjectPhaseService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -46,6 +47,9 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
     @Autowired
     private ResourceAttachmentService resourceAttachmentService;
 
+    @Autowired
+    private OSSObjectService ossObjectService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResourceAttachment uploadPhaseAttachment(Long phaseId, MultipartFile file) throws Exception {
@@ -58,16 +62,22 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
         }
         Long time = System.currentTimeMillis();
         // TODO 保存在本地
+        /*
         File file1 = new File(RESOURCE_LOCAL_PATH + "/" + time + file.getOriginalFilename());
         file.transferTo(file1);
+        */
+
+        // TODO 保存在OSS上
+        String ossPath = ossObjectService.uploadInputStream2OSS(file.getInputStream(), file.getOriginalFilename());
 
         // 创建个资源 ResourceAttachment
         ResourceAttachment resourceAttachment = new ResourceAttachment();
-        resourceAttachment.setFilePath(file1.getPath());
-        resourceAttachment.setName(file1.getName());
-        resourceAttachment.setSize(file1.length());
-        resourceAttachment.setSuffix(FileUtil.extName(file1.getName()));
-        resourceAttachment.setType(ResourceAttachment.LOCAL);
+        //resourceAttachment.setFilePath(file1.getPath());
+        resourceAttachment.setUrl(ossPath);
+        resourceAttachment.setName(file.getOriginalFilename());
+        resourceAttachment.setSize(file.getSize());
+        resourceAttachment.setSuffix(FileUtil.extName(file.getOriginalFilename()));
+        resourceAttachment.setType(ResourceAttachment.REMOTE);
         resourceAttachment.setCreateTime(new Date());
         resourceAttachmentService.insert(resourceAttachment);
         // 创建节点资源信息

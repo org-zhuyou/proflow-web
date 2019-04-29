@@ -12,11 +12,8 @@ import com.proflow.entity.ProjectContractResource;
 import com.proflow.entity.ResourceAttachment;
 import com.proflow.entity.vo.ProjectContractResourceVO;
 import com.proflow.mapper.ProjectContractMapper;
-import com.proflow.service.ProjectContractResourceService;
-import com.proflow.service.ProjectContractService;
+import com.proflow.service.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.proflow.service.ProjectService;
-import com.proflow.service.ResourceAttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,6 +44,8 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
     private ProjectContractResourceService projectContractResourceService;
     @Autowired
     private ProjectContractService projectContractService;
+    @Autowired
+    private OSSObjectService ossObjectService;
 
     @Value("${resource.local.path}")
     private String RESOURCE_LOCAL_PATH;
@@ -102,16 +101,20 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         }
         Long time = System.currentTimeMillis();
         // TODO 保存在本地
-        File file1 = new File(RESOURCE_LOCAL_PATH + "/" + time + file.getOriginalFilename());
-        file.transferTo(file1);
+        //File file1 = new File(RESOURCE_LOCAL_PATH + "/" + time + file.getOriginalFilename());
+        //file.transferTo(file1);
+
+        // TODO 保存在OSS上
+        String ossPath = ossObjectService.uploadInputStream2OSS(file.getInputStream(), file.getOriginalFilename());
+
 
         // 创建个资源 ResourceAttachment
         ResourceAttachment resourceAttachment = new ResourceAttachment();
-        resourceAttachment.setFilePath(file1.getPath());
-        resourceAttachment.setName(file1.getName());
-        resourceAttachment.setSize(file1.length());
-        resourceAttachment.setSuffix(FileUtil.extName(file1.getName()));
-        resourceAttachment.setType(ResourceAttachment.LOCAL);
+        resourceAttachment.setUrl(ossPath);
+        resourceAttachment.setName(file.getOriginalFilename());
+        resourceAttachment.setSize(file.getSize());
+        resourceAttachment.setSuffix(FileUtil.extName(file.getOriginalFilename()));
+        resourceAttachment.setType(ResourceAttachment.REMOTE);
         resourceAttachment.setCreateTime(new Date());
         resourceAttachmentService.insert(resourceAttachment);
         // 创建个合同资源表 ProjectContractResource
