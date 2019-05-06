@@ -101,7 +101,7 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
         List<String> imageArr = asList("JPG","JPEG","GIF","PNG");
         if (videoArr.contains(suffix.toUpperCase())) {
             return RrcFileType.VIDEO.getId();
-        } else if (imageArr.contains(suffix.toLowerCase())){
+        } else if (imageArr.contains(suffix.toUpperCase())){
             return RrcFileType.IMAGE.getId();
         } else {
             return RrcFileType.OTHER.getId();
@@ -120,7 +120,7 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
         }
 
         List<ProjectPhaseAttachment> projectPhaseAttachments = projectPhaseAttachmentService.selectList
-                (Condition.create().eq("project_phase_id", phaseId));
+                (Condition.create().eq("project_phase_id", phaseId).orderBy("id",false));
         List<ProjectPhaseAttrVO> voList = new ArrayList<>();
         for (ProjectPhaseAttachment attachment : projectPhaseAttachments) {
             ProjectPhaseAttrVO vo = new ProjectPhaseAttrVO();

@@ -142,7 +142,7 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         List<String> imageArr = asList("JPG","JPEG","GIF","PNG");
         if (videoArr.contains(suffix.toUpperCase())) {
             return RrcFileType.VIDEO.getId();
-        } else if (imageArr.contains(suffix.toLowerCase())){
+        } else if (imageArr.contains(suffix.toUpperCase())){
             return RrcFileType.IMAGE.getId();
         } else {
             return RrcFileType.OTHER.getId();
