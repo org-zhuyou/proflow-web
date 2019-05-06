@@ -3,6 +3,7 @@ package com.proflow.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.mapper.Condition;
+import com.proflow.em.RrcFileType;
 import com.proflow.entity.*;
 import com.proflow.entity.vo.ProjectContractResourceVO;
 import com.proflow.entity.vo.ProjectPhaseAttrVO;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -78,6 +81,8 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
         resourceAttachment.setSize(file.getSize());
         resourceAttachment.setSuffix(FileUtil.extName(file.getOriginalFilename()));
         resourceAttachment.setType(ResourceAttachment.REMOTE);
+        resourceAttachment.setFileType(getRrcFileTypeBySuffix(resourceAttachment.getSuffix()));
+
         resourceAttachment.setCreateTime(new Date());
         resourceAttachmentService.insert(resourceAttachment);
         // 创建节点资源信息
@@ -88,6 +93,20 @@ public class ProjectPhaseServiceImpl extends ServiceImpl<ProjectPhaseMapper, Pro
         projectPhaseAttachment.setResourceAttachmentId(resourceAttachment.getId());
         projectPhaseAttachmentService.insert(projectPhaseAttachment);
         return resourceAttachment;
+    }
+
+    private Integer getRrcFileTypeBySuffix(String suffix) {
+        List<String> videoArr = asList("AVI","MOV","RMVB","RM","FLV","MP4","3GP");
+
+        List<String> imageArr = asList("JPG","JPEG","GIF","PNG");
+        if (videoArr.contains(suffix.toUpperCase())) {
+            return RrcFileType.VIDEO.getId();
+        } else if (imageArr.contains(suffix.toLowerCase())){
+            return RrcFileType.IMAGE.getId();
+        } else {
+            return RrcFileType.OTHER.getId();
+        }
+
     }
 
     @Override

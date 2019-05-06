@@ -39,6 +39,11 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
      * 文件后缀
      */
 	private String suffix;
+
+	/**
+	 * 文件类型
+	 */
+	private Integer fileType;
     /**
      * 资源类型
      */
@@ -112,6 +117,14 @@ public class ResourceAttachment extends Model<ResourceAttachment> {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Integer getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(Integer fileType) {
+		this.fileType = fileType;
 	}
 
 	@Override

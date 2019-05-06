@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.proflow.em.RrcFileType;
 import com.proflow.entity.Project;
 import com.proflow.entity.ProjectContract;
 import com.proflow.entity.ProjectContractResource;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -115,6 +118,9 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         resourceAttachment.setSize(file.getSize());
         resourceAttachment.setSuffix(FileUtil.extName(file.getOriginalFilename()));
         resourceAttachment.setType(ResourceAttachment.REMOTE);
+
+        resourceAttachment.setFileType(getRrcFileTypeBySuffix(resourceAttachment.getSuffix()));
+
         resourceAttachment.setCreateTime(new Date());
         resourceAttachmentService.insert(resourceAttachment);
         // 创建个合同资源表 ProjectContractResource
@@ -127,6 +133,20 @@ public class ProjectContractServiceImpl extends ServiceImpl<ProjectContractMappe
         projectContractResourceService.insert(projectContractResource);
 
         return resourceAttachment;
+
+    }
+
+    private Integer getRrcFileTypeBySuffix(String suffix) {
+        List<String> videoArr = asList("AVI","MOV","RMVB","RM","FLV","MP4","3GP");
+
+        List<String> imageArr = asList("JPG","JPEG","GIF","PNG");
+        if (videoArr.contains(suffix.toUpperCase())) {
+            return RrcFileType.VIDEO.getId();
+        } else if (imageArr.contains(suffix.toLowerCase())){
+            return RrcFileType.IMAGE.getId();
+        } else {
+            return RrcFileType.OTHER.getId();
+        }
 
     }
 
