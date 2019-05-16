@@ -20,4 +20,6 @@ public interface ProjectMapper extends BaseMapper<Project> {
 
     List<ProjectVO> listProject(Page<ProjectVO> page, @Param("project") Project project);
 
+    List<String> projectViewIds();
+
 }

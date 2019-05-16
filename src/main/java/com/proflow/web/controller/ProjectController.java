@@ -1,5 +1,6 @@
 package com.proflow.web.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.proflow.annotation.NoAuth;
@@ -8,6 +9,7 @@ import com.proflow.entity.Project;
 import com.proflow.entity.vo.ProjectVO;
 import com.proflow.entity.vo.UserVO;
 import com.proflow.service.ProjectContractService;
+import com.proflow.service.ProjectPhaseAttachmentService;
 import com.proflow.service.ProjectService;
 import com.proflow.web.form.PageForm;
 import com.proflow.web.form.ResultForm;
@@ -37,13 +39,33 @@ public class ProjectController extends BaseController {
     private ProjectService projectService;
     @Autowired
     private ProjectContractService projectContractService;
+    @Autowired
+    private ProjectPhaseAttachmentService projectPhaseAttachmentService;
+
+
+    @NoAuth
+    @PostMapping("/showProjectIds")
+    public Object showProjectIds() {
+        ResultForm<?> resultForm = null;
+        try {
+            Object obj = projectService.projectViewIds();
+            resultForm = ResultForm.createSuccess("查询成功", obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError("系统繁忙，请稍后再试");
+        }
+        return resultForm;
+    }
 
     @NoAuth
     @PostMapping("/projectView")
     public Object projectView(Long projectId) {
         ResultForm<?> resultForm = null;
         try {
+            System.err.println(projectId);
             Object obj = projectService.projectView(projectId);
+            System.err.println(JSON.toJSONString(obj));
             resultForm = ResultForm.createSuccess("查询成功", obj);
         } catch (Exception e) {
             e.printStackTrace();

@@ -43,4 +43,9 @@
         </where>
     </select>
 
+    <select id="projectViewIds" resultType="java.lang.String">
+        select DISTINCT (t.project_id) from project_phase_attachment t order by t.project_phase_id desc
+
+    </select>
+
 </mapper>

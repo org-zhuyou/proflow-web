@@ -49,6 +49,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private UserService userService;
 
     @Override
+    public List<String> projectViewIds() {
+
+        return this.baseMapper.projectViewIds();
+    }
+
+    @Override
     public Object projectView(Long projectId) throws Exception {
         if (projectId == null) {
             throw new IllegalArgumentException();
