@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +43,64 @@ public class ProjectController extends BaseController {
     private ProjectContractService projectContractService;
     @Autowired
     private ProjectPhaseAttachmentService projectPhaseAttachmentService;
+
+    private Object lock = new Object();
+    private Object rebackLock = new Object();
+
+    public static ConcurrentMap<String, List<String>> cache = new ConcurrentHashMap<String, List<String>>();
+
+
+    @RequestMapping("/rebackShow")
+    public Object rebackShow(String projectId, String code) {
+        synchronized (rebackLock) {
+            List<String> proIds = cache.get(code);
+
+            if (proIds == null || "undefined".equals(projectId)) {
+                return ResultForm.createSuccess("回调成功", null);
+            }
+
+            proIds.add(projectId);
+            cache.put(code, proIds);
+            //System.out.println(code + "------------归还ID:" + projectId);
+            //lock.notify();
+        }
+        return ResultForm.createSuccess("回调成功", null);
+    }
+
+    @RequestMapping("/projectShow")
+    public Object projectShow(String code) {
+        ResultForm<?> resultForm = null;
+
+        try {
+
+            synchronized (lock) {
+                List<String> proIds = cache.get(code);
+
+                if (proIds == null) {
+                    proIds = projectService.projectViewIds();
+                }
+                if (proIds.size() == 0) {
+                    //lock.wait();
+                }
+                String projectId = proIds.get(0);
+                Object obj = projectService.projectView(Long.parseLong(projectId));
+                resultForm = ResultForm.createSuccess("查询成功", obj);
+                //System.out.println(code + "-----------使用ID："+ projectId);
+                proIds.remove(0);
+                cache.put(code, proIds);
+                //proIds.add(projectId);
+                //cache.put(ip, proIds);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError("系统繁忙，请稍后再试");
+        }
+
+
+        return resultForm;
+    }
 
 
     @NoAuth
@@ -63,9 +123,7 @@ public class ProjectController extends BaseController {
     public Object projectView(Long projectId) {
         ResultForm<?> resultForm = null;
         try {
-            System.err.println(projectId);
             Object obj = projectService.projectView(projectId);
-            System.err.println(JSON.toJSONString(obj));
             resultForm = ResultForm.createSuccess("查询成功", obj);
         } catch (Exception e) {
             e.printStackTrace();
