@@ -17,13 +17,16 @@ import com.proflow.web.utils.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -58,22 +61,84 @@ public class ProjectController extends BaseController {
             if (proIds == null || "undefined".equals(projectId)) {
                 return ResultForm.createSuccess("回调成功", null);
             }
-
-            proIds.add(projectId);
-            cache.put(code, proIds);
+            if (!proIds.contains(projectId)) {
+                proIds.add(projectId);
+                cache.put(code, proIds);
+            }
             //System.out.println(code + "------------归还ID:" + projectId);
             //lock.notify();
         }
         return ResultForm.createSuccess("回调成功", null);
     }
 
-    @RequestMapping("/projectShow")
-    public Object projectShow(String code) {
+    @RequestMapping("/rebackShowJson")
+    public Object rebackShowJson(@RequestBody Map<String,String> map) {
+        synchronized (rebackLock) {
+            String code = map.get("code");
+            String projectId = map.get("projectId");
+
+            List<String> proIds = cache.get(code);
+
+            if (proIds == null || "undefined".equals(projectId)) {
+                return ResultForm.createSuccess("回调成功", null);
+            }
+            if (!proIds.contains(projectId)) {
+                proIds.add(projectId);
+                cache.put(code, proIds);
+            }
+            //System.out.println(code + "------------归还ID:" + projectId);
+            //lock.notify();
+        }
+        return ResultForm.createSuccess("回调成功", null);
+    }
+
+    @RequestMapping("/projectShowJson")
+    public Object projectShowJson(@RequestBody Map<String,String> map, HttpServletRequest request) {
         ResultForm<?> resultForm = null;
 
         try {
 
             synchronized (lock) {
+
+                String code = map.get("code");
+
+                //request.getInputStream();
+                List<String> proIds = cache.get(code);
+
+                if (proIds == null) {
+                    proIds = projectService.projectViewIds();
+                }
+                if (proIds.size() == 0) {
+                    //lock.wait();
+                }
+                String projectId = proIds.get(0);
+                Object obj = projectService.projectView(Long.parseLong(projectId));
+                resultForm = ResultForm.createSuccess("查询成功", obj);
+                //System.out.println(code + "-----------使用ID："+ projectId);
+                proIds.remove(0);
+                cache.put(code, proIds);
+                //proIds.add(projectId);
+                //cache.put(ip, proIds);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            resultForm = ResultForm.createError("系统繁忙，请稍后再试");
+        }
+
+
+        return resultForm;
+    }
+
+    @RequestMapping("/projectShow")
+    public Object projectShow(String code, HttpServletRequest request) {
+        ResultForm<?> resultForm = null;
+
+        try {
+
+            synchronized (lock) {
+                request.getInputStream();
                 List<String> proIds = cache.get(code);
 
                 if (proIds == null) {
@@ -133,7 +198,7 @@ public class ProjectController extends BaseController {
         return resultForm;
     }
 
-    @NoAuth
+    //@NoAuth
     @PostMapping("/projectViewAll")
     public Object projectViewAll() {
         ResultForm<?> resultForm = null;
