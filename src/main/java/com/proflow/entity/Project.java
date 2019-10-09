@@ -73,6 +73,8 @@ public class Project extends Model<Project> {
 	private Long createUser;
 	private Date createTime;
 
+	private Integer delFlag;
+
 
 	public Long getId() {
 		return id;
@@ -188,6 +190,14 @@ public class Project extends Model<Project> {
 
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public Integer getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(Integer delFlag) {
+		this.delFlag = delFlag;
 	}
 
 	@Override

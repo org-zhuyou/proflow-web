@@ -244,7 +244,9 @@ public class ProjectController extends BaseController {
     public Object deleteProject(Long id) {
         ResultForm<?> resultForm = null;
         try {
-            projectService.deleteProject(id);
+            Project project = projectService.selectById(id);
+            project.setDelFlag(1);
+            projectService.updateById(project);
             resultForm = ResultForm.createSuccess("删除成功", null);
         } catch (Exception e) {
             e.printStackTrace();
