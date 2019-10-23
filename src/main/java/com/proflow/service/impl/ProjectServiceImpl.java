@@ -87,6 +87,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         if (page == null) {
             throw new IllegalArgumentException();
         }
+        if (project.getDelFlag() == null) {
+            project.setDelFlag(0);
+        }
         List<ProjectVO> projectVOS = this.baseMapper.listProject(page, project);
         page.setRecords(projectVOS);
         return page;
@@ -115,16 +118,49 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             throw new Exception("项目不存在");
         }
 
+        project.updateById();
+
+
+
+
+        List<ProjectPhase> projectPhases = this.projectPhaseService.selectList(Condition.create().eq("project_id", id));
+        for (ProjectPhase projectPhase : projectPhases) {
+            // setDelFlag
+        }
+        this.projectPhaseService.updateAllColumnBatchById(projectPhases);
+
+        List<ProjectPhaseFund> projectPhaseFunds = this.projectPhaseFundService.selectList(Condition.create().eq("project_id", id));
+        for (ProjectPhaseFund projectPhaseFund : projectPhaseFunds) {
+            // setDelFlag
+        }
+        this.projectPhaseFundService.updateAllColumnBatchById(projectPhaseFunds);
+
+        List<ProjectSubpackage> projectSubpackages = this.projectSubpackageService.selectList(Condition.create().eq("project_id", id));
+        for (ProjectSubpackage projectSubpackage : projectSubpackages) {
+            // setDelFlag
+        }
+        this.projectSubpackageService.updateAllColumnBatchById(projectSubpackages);
+
+        List<ProjectPhaseAttachment> projectPhaseAttachments = this.projectPhaseAttachmentService.selectList(Condition.create().eq("project_id", id));
+        for (ProjectPhaseAttachment projectPhaseAttachment : projectPhaseAttachments) {
+            // setDelFlag
+        }
+        this.projectPhaseAttachmentService.updateAllColumnBatchById(projectPhaseAttachments);
+
+
+
 //        List<ProjectPhase> projectPhaseList = projectPhaseService.selectList(Condition.create().eq("project_id", id));
 //        List<ProjectPhaseFund> projectPhaseFundList = projectPhaseFundService.selectList(Condition.create().eq("project_id", id));
 //        List<ProjectSubpackage> projectSubpackageList = projectSubpackageService.selectList(Condition.create().eq("project_id", id));
 //        List<ProjectPhaseAttachment> projectPhaseAttachmentList = projectPhaseAttachmentService.selectList(Condition.create().eq("project_id", id));
 
+        /*
         this.deleteById(id);
         this.projectPhaseService.delete(Condition.create().eq("project_id", id));
         this.projectPhaseFundService.delete(Condition.create().eq("project_id", id));
         this.projectSubpackageService.delete(Condition.create().eq("project_id", id));
         this.projectPhaseAttachmentService.delete(Condition.create().eq("project_id", id));
+        */
 
     }
 

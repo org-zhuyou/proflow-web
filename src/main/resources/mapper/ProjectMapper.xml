@@ -18,6 +18,7 @@
         <result column="owner_id" property="ownerId" />
         <result column="create_user" property="createUser" />
         <result column="create_time" property="createTime" />
+        <result column="del_flag" property="delFlag" />
     </resultMap>
 
     <resultMap id="voBaseResultMap" extends="BaseResultMap" type="com.proflow.entity.vo.ProjectVO" >
@@ -31,6 +32,10 @@
             project p
         LEFT JOIN user u ON p.owner_id = u.id
         <where>
+
+            <if test="project.delFlag != null" >
+                and p.del_flag = #{project.delFlag}
+            </if>
             <if test="project.name != null" >
                 and p.name LIKE CONCAT('%',#{project.name},'%')
             </if>
@@ -44,7 +49,7 @@
     </select>
 
     <select id="projectViewIds" resultType="java.lang.String">
-        select DISTINCT (t.project_id) from project_phase_attachment t order by t.project_phase_id desc
+        select DISTINCT (t.project_id) from project_phase_attachment t left join project p on p.id = t.project_id where p.del_flag = 0 order by t.project_phase_id desc
 
     </select>
 
